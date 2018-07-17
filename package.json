@@ -1,0 +1,27 @@
+{
+  "name": "parcel-plugin-moon",
+  "version": "1.1.0",
+  "description": "Parcel plugin for Moon",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kbrsh/parcel-plugin-moon.git"
+  },
+  "keywords": [
+    "parcel",
+    "moon"
+  ],
+  "author": "Kabir Shah",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kbrsh/parcel-plugin-moon/issues"
+  },
+  "homepage": "https://github.com/kbrsh/parcel-plugin-moon#readme",
+  "dependencies": {
+    "moon": "latest",
+    "parcel": "^1.9.7"
+  },
+  "peerDependencies": {
+    "moon": "*"
+  }
+}
