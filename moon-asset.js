@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const Moon = require("moon");
+const MoonMVL = require("moon-mvl");
 const { Asset } = require("parcel");
 
 class MoonAsset extends Asset {
@@ -10,25 +10,20 @@ class MoonAsset extends Asset {
 	}
 
 	async generate() {
-		let code = "import Moon from \"moon\";";
-		const view = "function(m,instance,locals){" + Moon.compile(this.contents) + "};";
-		let data = "{};";
+		const { js, css, deps } = MoonMVL(this.name, this.contents);
 
-		const fileName = this.basename.slice(0, -4);
-		const directoryName = path.dirname(this.name);
-		if (fs.existsSync(path.join(directoryName, fileName + ".js"))) {
-			const jsFile = `./${fileName}.js`;
-			this.addDependency(jsFile);
-			code += `import data from "${jsFile}";`;
-			data = "data;";
+		for (let i = 0; i < deps.length; i++) {
+			this.addDependency(deps[i]);
 		}
-
-		code += `export default Moon.extend("${path.basename(directoryName)}",function(){var options=${data}options.view=${view}return options;});`;
 
 		return [
 			{
 				type: "js",
-				value: code
+				value: js
+			},
+			{
+				type: "css",
+				value: css
 			}
 		];
 	}
