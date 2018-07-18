@@ -10,11 +10,7 @@ class MoonAsset extends Asset {
 	}
 
 	async generate() {
-		const { js, css, deps } = MoonMVL(this.name, this.contents);
-
-		for (let i = 0; i < deps.length; i++) {
-			this.addDependency(deps[i]);
-		}
+		const { js, css } = MoonMVL(this.name, this.contents);
 
 		return [
 			{
