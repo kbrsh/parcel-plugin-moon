@@ -18,12 +18,12 @@ class MoonAsset extends Asset {
 
 		return [
 			{
-				type: "js",
-				value: js
-			},
-			{
 				type: "css",
 				value: css
+			},
+			{
+				type: "js",
+				value: js
 			}
 		];
 	}
