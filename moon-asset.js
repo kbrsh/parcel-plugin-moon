@@ -1,6 +1,6 @@
-const fs = require("fs");
 const path = require("path");
 const MoonMVL = require("moon-mvl");
+const slash = require("moon-mvl/lib/slash");
 const { Asset } = require("parcel");
 
 class MoonAsset extends Asset {
@@ -10,18 +10,56 @@ class MoonAsset extends Asset {
 	}
 
 	async generate() {
-		const { js, css } = MoonMVL(this.name, this.contents);
+		let { name, fileName, js, css } = MoonMVL(this.name, this.contents);
+		let parts;
 
-		return [
-			{
-				type: "css",
-				value: css
-			},
-			{
+		if (process.env.NODE_ENV === "development") {
+			js = `
+				import fs from "fs";
+				import { registerJS, registerCSS } from "moon-mvl/lib/hot";
+				import scopeCSS from "moon-mvl/lib/scopeCSS";
+				let removeJS;
+				const removeCSS = registerCSS(scopeCSS("moon-${name}-${slash(name)}", fs.readFileSync(__dirname + "${path.sep}${fileName}.css").toString()));
+				${
+					js.replace("return options;", `
+						const onCreate = options.onCreate;
+						options.onCreate = function() {
+							removeJS = registerJS(this);
+							if (onCreate !== undefined) {
+								onCreate();
+							}
+						};
+						$&
+					`)
+				}
+				if (module.hot) {
+					module.hot.dispose(() => {
+						if (removeJS !== undefined) {
+							removeJS();
+						}
+						removeCSS();
+					});
+				}
+			`;
+
+			parts = [{
 				type: "js",
 				value: js
-			}
-		];
+			}];
+		} else {
+			parts = [
+				{
+					type: "css",
+					value: css
+				},
+				{
+					type: "js",
+					value: js
+				}
+			]
+		}
+
+		return parts;
 	}
 }
 
