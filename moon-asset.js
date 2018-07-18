@@ -18,13 +18,13 @@ class MoonAsset extends Asset {
 				import fs from "fs";
 				import { registerJS, registerCSS } from "moon-mvl/lib/hot";
 				import scopeCSS from "moon-mvl/lib/scopeCSS";
-				let removeJS;
+				let removeJS = [];
 				const removeCSS = registerCSS(scopeCSS("moon-${name}-${slash(name)}", fs.readFileSync(__dirname + "${path.sep}${fileName}.css").toString()));
 				${
 					js.replace("return options;", `
 						const onCreate = options.onCreate;
 						options.onCreate = function() {
-							removeJS = registerJS(this);
+							removeJS.push(registerJS(this));
 							if (onCreate !== undefined) {
 								onCreate();
 							}
@@ -34,9 +34,11 @@ class MoonAsset extends Asset {
 				}
 				if (module.hot) {
 					module.hot.dispose(() => {
-						if (removeJS !== undefined) {
-							removeJS();
+						for (let i = 0; i < removeJS.length; i++) {
+							removeJS[i]();
 						}
+
+						removeJS = [];
 						removeCSS();
 					});
 				}
