@@ -15,23 +15,24 @@ class MoonAsset extends Asset {
 		const directoryName = path.dirname(this.name);
 		const name = path.basename(directoryName);
 
-		const jsPath = path.join(directoryName, fileName + ".js");
-		let js = fs.existsSync(jsPath) ? fs.readFileSync(jsPath).toString() : null;
+		const jsFile = `.${path.sep}${fileName}.js`;
+		const jsPath = path.join(directoryName, jsFile);
+		let js = fs.existsSync(jsPath) ? fs.readFileSync(jsPath, "utf8") : null;
 
-		const cssPath = path.join(directoryName, fileName + ".css");
-		let css = fs.existsSync(cssPath) ? fs.readFileSync(cssPath).toString() : null;
+		const cssFile = `.${path.sep}${fileName}.css`;
+		const cssPath = path.join(directoryName, cssFile);
+		let css = fs.existsSync(cssPath) ? fs.readFileSync(cssPath, "utf8") : null;
 
-		({ js, css } = MoonMVL(name, contents, jsPath, js, cssPath, css));
+		({ js, css } = MoonMVL(name, this.contents, jsFile, js, cssFile, css));
 		let parts;
 
 		if (process.env.NODE_ENV === "development") {
 			js = `
 				import fs from "fs";
-				import path from "path";
 				import { registerJS, registerCSS } from "moon-mvl/lib/hot";
 				import scopeCSS from "moon-mvl/lib/scopeCSS";
 				let removeJS = [];
-				const removeCSS = registerCSS(scopeCSS("moon-${name}-${slash(name)}", fs.readFileSync(${cssPath}).toString()));
+				const removeCSS = registerCSS(scopeCSS("moon-${name}-${slash(name)}", fs.readFileSync("${cssPath}", "utf8")));
 				${
 					js.replace("return options;", `
 						const onCreate = options.onCreate;
