@@ -16,7 +16,7 @@ class MoonAsset extends Asset {
 		}];
 
 		if (css !== null) {
-			parts.push({
+			parts.unshift({
 				type: "css",
 				value: css
 			});
