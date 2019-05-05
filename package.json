@@ -17,10 +17,8 @@
     "url": "https://github.com/kbrsh/parcel-plugin-moon/issues"
   },
   "homepage": "https://github.com/kbrsh/parcel-plugin-moon#readme",
-  "dependencies": {
-    "moon-mvl": "latest"
-  },
   "peerDependencies": {
+    "moon-mvl": "*",
     "parcel": "*"
   }
 }
