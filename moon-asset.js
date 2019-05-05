@@ -8,7 +8,7 @@ class MoonAsset extends Asset {
 	}
 
 	async generate() {
-		const { js, css } = MoonMVL(this.basename.slice(0, -4), this.contents, process.env.NODE_ENV === "development");
+		const { js, css } = MoonMVL(this.basename.slice(0, -4), this.contents);
 
 		let parts = [{
 			type: "js",
